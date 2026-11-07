@@ -1,0 +1,27 @@
+Cube Launcher 软件声明
+
+本软件是一个开源的 Minecraft 启动器，仅供学习和个人使用。
+
+1. 非官方声明
+Cube Launcher 与 Mojang Studios、Microsoft Corporation 无任何关联，亦未获得官方授权。Minecraft 是 Mojang Studios 的注册商标。
+
+2. 免责声明
+本软件按"现状"提供，不提供任何明示或暗示的担保。因使用本软件导致的任何直接或间接损失，开发者不承担责任。
+
+3. 使用条款
+- 本软件仅供个人非商业用途
+- 用户需自行拥有合法的 Minecraft 账号
+- 使用本软件下载游戏文件时，需遵守 Minecraft EULA 协议
+
+4. 开源协议
+本软件基于 MIT 协议开源，详情见 LICENSE 文件。
+
+5. 反馈与交流
+如有问题或建议，欢迎联系开发者。
+
+6.GitHub仓库
+https://github.com/cn0323/Cube-launcher
+
+开发者：重念
+版本：v1.3.0
+日期：2026年11月
