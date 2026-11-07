@@ -1,0 +1,23 @@
+版权声明
+
+Cube Launcher
+Copyright (c) 2026 重念. All rights reserved.
+
+本软件及其源代码、图标、界面设计均受著作权法保护。
+
+1. 软件著作权
+Cube Launcher 由 重念 开发并拥有完整著作权。
+
+2. 开源授权
+本软件基于 MIT 协议发布，允许自由使用、修改和分发，但必须保留本版权声明。
+
+3. 第三方资源
+- Minecraft 相关素材版权归 Mojang Studios / Microsoft 所有
+- 图标、字体等第三方资源归原作者所有
+- 模组、整合包等内容版权归各自作者所有
+
+4. 商标
+- "Minecraft" 是 Mojang Studios 的注册商标
+- "Cube Launcher" 名称及蓝色立方体图标为本项目专属标识
+
+未经许可，不得将本软件用于商业用途或冒充官方产品。
