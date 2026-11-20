@@ -278,6 +278,12 @@
 
   const FALLBACK = [
     {
+      tag: "v1.2.6",
+      name: "Cube Launcher 1.2.6",
+      date: "2026-11-20",
+      body: "# Cube Launcher 1.2.6\n\n这一版只做一件事：把软件内所有「官网 / 更新 / 下载」出口统一到新官网 `https://cn0323.github.io/Cube-launcher/`，不再把用户送到 GitHub 页面。\n\n## 改进\n\n- **「打开官网更新」直达下载区**：设置 → 关于，以及更新弹窗里的「去官网更新」，点击后打开新官网的下载区（`#download`），版本号、系统要求和三个安装包在一屏内就能看到。\n- **「打开更新日志」改看官网**：更新弹窗里的按钮现在打开新官网的更新记录区（`#changelog`），和官网首屏的版本号保持一致，不再跳到 GitHub Release。\n- **无法自动安装时也走官网**：当远端版本缺少可校验的安装包时，点确认不再落到 GitHub 资产直链，而是打开官网下载区，让用户自己挑 exe 或压缩包。\n\n## 修复\n\n- 单元测试里的自更新服务桩缺少进度参数，导致 `Launcher.sln` 整体编译失败；补齐签名后解决方案恢复可编译。\n\n## 下载说明\n\n- `CubeLauncher_x64.exe`：单文件，**框架依赖**，需要先装 [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)（x64）。\n- `CubeLauncher-win64.zip`：exe + 使用说明 + 正版登录说明，解压即用。\n- `CubeLauncher-1.2.6-source.zip`：完整源码（GPL-3.0）。\n\n> 1.2.5 及更早的构建，在「设置 → 关于 → 检查更新」里能看到 1.2.6 并一键升级。\n"
+    },
+    {
       tag: "v1.2.5",
       name: "Cube Launcher 1.2.5",
       date: "2026-11-20",
