@@ -53,6 +53,45 @@
   );
   onScroll();
 
+  /* ---------------------------- 深色 / 浅色主题 ---------------------------- */
+  const root = document.documentElement;
+  const themeToggle = document.getElementById("themeToggle");
+  const themeColorMeta = document.getElementById("themeColorMeta");
+
+  const applyTheme = (theme, persist) => {
+    const next = theme === "dark" ? "dark" : "light";
+    root.setAttribute("data-theme", next);
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute("content", next === "dark" ? "#070a10" : "#f7f8fb");
+    }
+    if (themeToggle) {
+      themeToggle.setAttribute("aria-pressed", String(next === "dark"));
+      themeToggle.title = next === "dark" ? "切换到浅色主题" : "切换到深色主题";
+    }
+    if (persist) {
+      try { localStorage.setItem("cube-theme", next); } catch (e) { /* 无痕模式忽略 */ }
+    }
+  };
+
+  applyTheme(root.getAttribute("data-theme"), false);
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      // 过渡只在切换瞬间加，平时不加，免得滚动时掉帧
+      root.classList.add("theme-anim");
+      window.setTimeout(() => root.classList.remove("theme-anim"), 420);
+      applyTheme(root.getAttribute("data-theme") === "dark" ? "light" : "dark", true);
+    });
+  }
+
+  // 用户没手动选过的话，跟着系统走
+  const schemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  schemeQuery.addEventListener?.("change", (e) => {
+    let saved = null;
+    try { saved = localStorage.getItem("cube-theme"); } catch (err) { /* ignore */ }
+    if (!saved) applyTheme(e.matches ? "dark" : "light", false);
+  });
+
   /* ---------------------------- 跟随鼠标的光 ---------------------------- */
   if (finePointer && !reduceMotion) {
     document.body.classList.add("has-pointer");
@@ -221,10 +260,35 @@
     });
   }
 
+  /* ---------------------------- 深浅主题对比滑杆 ---------------------------- */
+  const ba = document.querySelector(".ba");
+
+  if (ba) {
+    const range = ba.querySelector(".ba-range");
+    const setPos = (v) => ba.style.setProperty("--pos", `${v}%`);
+
+    if (range) {
+      setPos(range.value);
+      range.addEventListener("input", () => setPos(range.value));
+    }
+  }
+
   /* ---------------------------- 更新日志（读 Releases） ---------------------------- */
   const logList = document.getElementById("logList");
 
   const FALLBACK = [
+    {
+      tag: "v1.2.4",
+      name: "Cube Launcher 1.2.4",
+      date: "2026-11-18",
+      body: "# Cube Launcher 1.2.4\n\n这一版只改了译文，没有动功能。\n\n## 文案\n\n- **英文**：「打开官网更新」的按钮改成 `Update from website`；模型设置的说明不再用 `unlock unlimited questions` 这种广告腔，改成 `Point it at any OpenAI-compatible endpoint and you can ask anything.`；离线模式副标题也去掉 `unlock everything`。\n- **英文细节**：等待上一则回答的提示补成完整句子，`Fill in endpoint, key and model first` 补上冠词，`Partial UI` 改成 `UI preview`。\n- **日文**：「公式サイトの更新を開く」改成「公式サイトから更新」，「一部 UI」改成「UI プレビュー」，引用项目的致谢改成「公開してくださった作者に感謝します」。\n- **繁体中文**：「開啟官網更新」改成「前往官網更新」，和弹窗统一。\n\n## 其它\n\n- 版本号 1.2.4，版本码 1020499，界面和 1.2.3 完全一样。不切英文或日文的话，用起来没有区别。"
+    },
+    {
+      tag: "v1.2.3",
+      name: "Cube Launcher 1.2.3",
+      date: "2026-11-10",
+      body: "# Cube Launcher 1.2.3\n\n这一版只动了两个地方：侧边栏的选中样式，和更新入口。\n\n## 界面\n\n- **去掉任务栏选项的纯色底板**：左侧导航选中时不再铺一整块灰色底，改成图标左侧一根蓝色细指示条，选中项更轻，也不再压住液态玻璃。\n\n## 更新\n\n- **新增「打开官网更新」按钮**：设置 → 关于，版本号和「检查更新」旁边多了一个按钮，点一下直接用浏览器打开官网的下载区，不用先关掉启动器。\n- **更新弹窗里的入口更好找**：弹窗底部的按钮原来挤在一起，宽度由 560 调到 648，两个出口都能完整显示。\n\n## 下载说明\n\n- `CubeLauncher_x64.exe`：单文件，**框架依赖**，需要先装 [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)（x64）。\n- `CubeLauncher-win64.zip`：exe + 使用说明 + 正版登录说明，解压即用。\n- `CubeLauncher-1.2.3-source.zip`：完整源码（GPL-3.0）。\n\n> 1.2.2 及更早的构建，在「设置 → 关于 → 检查更新」里能直接看到 1.2.3 并在启动器内一键升级。"
+    },
     {
       tag: "v1.2.2",
       name: "Cube Launcher 1.2.2",
@@ -334,40 +398,57 @@
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
 
+  const plainPeek = (raw) => {
+    const text = String(raw || "")
+      .split(/\r?\n/)
+      .map((l) => l.replace(/^[>#\-*+\s]+/, "").replace(/\*\*/g, "").replace(/`/g, ""))
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    return text.length > 96 ? `${text.slice(0, 96)}…` : text;
+  };
+
   const renderLogs = (items) => {
     if (!logList) return;
+
     logList.innerHTML = items
-      .map(
-        (it) => `
-      <article class="log-item reveal in">
-        <div class="log-head">
+      .map((it, i) => {
+        const open = i === 0;
+        const body = renderBody(stripDuplicateTitle(it.body, it.tag));
+        return `
+      <article class="log-item reveal in${open ? " is-open" : ""}">
+        <button class="log-head" type="button" aria-expanded="${open}">
           <span class="log-tag">${escapeHtml(it.tag)}</span>
           <span class="log-name">${escapeHtml(it.name || "")}</span>
+          ${open ? '<span class="log-new">最新</span>' : ""}
           <span class="log-date">${escapeHtml(it.date || "")}</span>
-        </div>
-        <div class="log-clip">
-          <div class="log-body">${renderBody(stripDuplicateTitle(it.body, it.tag))}</div>
-        </div>
-        <button class="log-expand" type="button" hidden>
-          <span>展开全文</span>
-          <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+          <span class="log-chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="14" height="14"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6"/></svg>
+          </span>
         </button>
-      </article>`
-      )
+        <div class="log-peek">${escapeHtml(plainPeek(it.body))}</div>
+        <div class="log-clip">
+          <div class="log-inner">
+            <div class="log-body">${body}</div>
+          </div>
+        </div>
+      </article>`;
+      })
       .join("");
 
-    // 内容过长时折叠，避免一屏被一段日志占满
     logList.querySelectorAll(".log-item").forEach((item) => {
-      const clip = item.querySelector(".log-clip");
-      const btn = item.querySelector(".log-expand");
-      if (!clip || !btn) return;
-      if (clip.scrollHeight <= 470) return;
-
-      btn.hidden = false;
-      btn.addEventListener("click", () => {
-        const open = item.classList.toggle("expanded");
-        btn.querySelector("span").textContent = open ? "收起" : "展开全文";
-        if (!open) item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      const head = item.querySelector(".log-head");
+      if (!head) return;
+      head.addEventListener("click", () => {
+        const willOpen = !item.classList.contains("is-open");
+        // 手风琴：展开一条时收起其它，免得整页都是日志
+        logList.querySelectorAll(".log-item").forEach((other) => {
+          if (other === item) return;
+          other.classList.remove("is-open");
+          other.querySelector(".log-head")?.setAttribute("aria-expanded", "false");
+        });
+        item.classList.toggle("is-open", willOpen);
+        head.setAttribute("aria-expanded", String(willOpen));
       });
     });
   };
@@ -376,7 +457,7 @@
     if (!logList) return;
     try {
       const res = await fetch(
-        "https://api.github.com/repos/cn0323/Cube-launcher/releases?per_page=3",
+        "https://api.github.com/repos/cn0323/Cube-launcher/releases?per_page=30",
         { headers: { Accept: "application/vnd.github+json" } }
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
