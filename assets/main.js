@@ -96,27 +96,43 @@
   if (finePointer && !reduceMotion) {
     document.body.classList.add("has-pointer");
 
+    const spot = document.getElementById("spotlight");
+    const ease = 0.15;
     let raf = 0;
-    let mx = 0;
-    let my = 0;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let primed = false;
+
+    const paint = () => {
+      raf = 0;
+      if (!primed) {
+        currentX = targetX;
+        currentY = targetY;
+        primed = true;
+      } else {
+        currentX += (targetX - currentX) * ease;
+        currentY += (targetY - currentY) * ease;
+      }
+
+      if (spot) {
+        const rect = spot.getBoundingClientRect();
+        spot.style.setProperty("--mx", `${currentX - rect.left}px`);
+        spot.style.setProperty("--my", `${currentY - rect.top}px`);
+      }
+
+      // 还差得远就继续追，追上了就停下来，别空转 rAF
+      if (Math.abs(targetX - currentX) > 0.4 || Math.abs(targetY - currentY) > 0.4)
+        raf = requestAnimationFrame(paint);
+    };
 
     window.addEventListener(
       "pointermove",
       (e) => {
-        mx = e.clientX;
-        my = e.clientY;
-        if (raf) return;
-        raf = requestAnimationFrame(() => {
-          raf = 0;
-          document.documentElement.style.setProperty("--mx", `${mx}px`);
-          document.documentElement.style.setProperty("--my", `${my}px`);
-          const spot = document.getElementById("spotlight");
-          if (spot) {
-            const rect = spot.getBoundingClientRect();
-            spot.style.setProperty("--mx", `${mx - rect.left}px`);
-            spot.style.setProperty("--my", `${my - rect.top}px`);
-          }
-        });
+        targetX = e.clientX;
+        targetY = e.clientY;
+        if (!raf) raf = requestAnimationFrame(paint);
       },
       { passive: true }
     );
@@ -277,6 +293,12 @@
   const logList = document.getElementById("logList");
 
   const FALLBACK = [
+    {
+      tag: "v1.2.7",
+      name: "Cube Launcher 1.2.7",
+      date: "2026-11-21",
+      body: "# Cube Launcher 1.2.7\n\n这一版把左侧导航的交互收回来，也把选中那块圆片调成了参考图的样子；官网的光效重新做了渐变。\n\n## 改进\n\n- **侧边栏固定在左边**：长按不再进入拖动，胶囊不会再被拖到窗口中间；之前拖过的话，启动后自动回到左侧默认位置。\n- **选中圆片加重**：圆片从「几乎透明的一层玻璃」改成一块实心的中性灰（浅色暖灰、深色烟灰），图标和文字压在上面更清楚。\n- **去掉蓝色描边**：原来圆片边缘有一圈青紫折射，现在换成很淡的中性白边，只保留上缘那道白色弧光，和参考图一致。\n- **官网光效更顺**：跟随鼠标的光斑改成三层渐变（光核、中层晕、远处尾光），衰减接近高斯，不再出现一圈硬边；鼠标移动改为缓动追随，不会一格一格地跳。\n- **图片不再串色**：光斑的层级压到内容下面，截图、封面这类不透明图片会整块盖住它，白色主题下 multiply 不会再给图片染上一层蓝灰。\n\n## 下载说明\n\n- `CubeLauncher_x64.exe`：单文件，**框架依赖**，需要先装 [.NET 8 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/8.0)（x64）。\n- `CubeLauncher-win64.zip`：exe + 使用说明 + 正版登录说明，解压即用。\n- `CubeLauncher-1.2.7-source.zip`：完整源码（GPL-3.0），同时已同步到仓库 `main`。\n\n> 1.2.6 及更早的构建，在「设置 → 关于 → 检查更新」里能看到 1.2.7 并一键升级。\n"
+    },
     {
       tag: "v1.2.6",
       name: "Cube Launcher 1.2.6",
