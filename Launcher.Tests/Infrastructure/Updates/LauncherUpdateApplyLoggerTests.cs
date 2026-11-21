@@ -1,0 +1,29 @@
+/*
+ * Cube Launcher
+ * Copyright (C) 2026 重念
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
+using Launcher.Infrastructure.Updates;
+
+namespace Launcher.Tests.Infrastructure.Updates;
+
+public sealed class LauncherUpdateApplyLoggerTests : TestTempDirectory
+{
+    [Fact]
+    public void IndependentUpdaterLogOmitsExceptionMessageAndUrlSecrets()
+    {
+        var logger = new LauncherUpdateApplyLogger(TempRoot);
+        logger.Info("Source=https://example.test/signed/path-secret?token=query-secret");
+        logger.Info("id_token=synthetic-id-secret Authorization=Basic synthetic-basic-secret");
+        logger.Error("Apply failed.", new InvalidOperationException("unlabelled-exception-secret"));
+
+        var output = File.ReadAllText(Assert.Single(Directory.GetFiles(TempRoot, "updater-*.log")));
+        Assert.Contains("ErrorType=InvalidOperationException", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("path-secret", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("query-secret", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("unlabelled-exception-secret", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("synthetic-id-secret", output, StringComparison.Ordinal);
+        Assert.DoesNotContain("synthetic-basic-secret", output, StringComparison.Ordinal);
+    }
+}

@@ -1,0 +1,82 @@
+/*
+ * Cube Launcher
+ * Copyright (C) 2026 重念
+ * SPDX-License-Identifier: GPL-3.0-only
+ */
+
+using Launcher.Infrastructure.Resources.ResourceLocalization;
+
+namespace Launcher.Tests.Infrastructure.Resources;
+
+public sealed class EmbeddedModNameLocalizationServiceTests
+{
+    [Fact]
+    public void OptionalCatalogFallsBackToNoLocalizationWhenNotEmbedded()
+    {
+        using var culture = new TestUiCultureScope("zh-Hans");
+        const string resourceName = "Launcher.Infrastructure.Resources.ResourceLocalization.mods.v1.jsonl";
+        using var stream = typeof(EmbeddedModNameLocalizationService).Assembly
+            .GetManifestResourceStream(resourceName);
+        var localization = new EmbeddedModNameLocalizationService();
+
+        if (stream is null)
+        {
+            Assert.Null(localization.FindByProjectSlug(ResourceProjectSource.Modrinth, "sodium", "Sodium"));
+            Assert.Null(localization.FindMcmodIdByProjectSlug(ResourceProjectSource.Modrinth, "sodium"));
+            Assert.Null(localization.FindSearchTerm(ResourceProjectSource.Modrinth, "钠"));
+            return;
+        }
+
+        Assert.Equal("钠", localization.FindByProjectSlug(ResourceProjectSource.Modrinth, "sodium", "Sodium"));
+        Assert.Equal(2785, localization.FindMcmodIdByProjectSlug(ResourceProjectSource.Modrinth, "sodium"));
+        Assert.Equal("Sodium", localization.FindSearchTerm(ResourceProjectSource.Modrinth, "钠"));
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("ja-JP")]
+    public void NonChineseLanguageDoesNotProvideChineseNamesOrSearch(string language)
+    {
+        using var culture = new TestUiCultureScope(language);
+        var localization = new EmbeddedModNameLocalizationService();
+
+        Assert.Null(localization.FindByProjectSlug(ResourceProjectSource.Modrinth, "sodium", "Sodium"));
+        Assert.Null(localization.FindSearchTerm(ResourceProjectSource.Modrinth, "钠"));
+    }
+
+    [Fact]
+    public void TraditionalChineseLanguageKeepsChineseLocalizationEnabled()
+    {
+        using var culture = new TestUiCultureScope("zh-Hant");
+        Assert.True(LauncherLanguages.IsChineseCulture(System.Globalization.CultureInfo.CurrentUICulture));
+    }
+
+    [Fact]
+    public void DuplicateSlugUsesLowestMcmodIdForBothTitleAndLink()
+    {
+        using var culture = new TestUiCultureScope("zh-Hans");
+        const string resourceName = "Launcher.Infrastructure.Resources.ResourceLocalization.mods.v1.jsonl";
+        using var stream = typeof(EmbeddedModNameLocalizationService).Assembly
+            .GetManifestResourceStream(resourceName);
+        if (stream is null)
+            return;
+
+        var localization = new EmbeddedModNameLocalizationService();
+        Assert.Equal("匠魂", localization.FindByProjectSlug(ResourceProjectSource.CurseForge,
+            "tinkers-construct", "Tinkers' Construct"));
+        Assert.Equal(101, localization.FindMcmodIdByProjectSlug(ResourceProjectSource.CurseForge,
+            "tinkers-construct"));
+        Assert.Equal("匠魂", localization.FindByProjectSlug(ResourceProjectSource.Modrinth,
+            "tinkers-construct", "Tinkers' Construct"));
+        Assert.Equal(101, localization.FindMcmodIdByProjectSlug(ResourceProjectSource.Modrinth,
+            "tinkers-construct"));
+        Assert.Equal("电脑", localization.FindByProjectSlug(ResourceProjectSource.CurseForge,
+            "computercraft", "Computer Craft"));
+        Assert.Equal(8, localization.FindMcmodIdByProjectSlug(ResourceProjectSource.CurseForge,
+            "computercraft"));
+        Assert.Equal("群峦传说", localization.FindByProjectSlug(ResourceProjectSource.CurseForge,
+            "tfcraft", "TerraFirmaCraft"));
+        Assert.Equal(28, localization.FindMcmodIdByProjectSlug(ResourceProjectSource.CurseForge,
+            "tfcraft"));
+    }
+}
