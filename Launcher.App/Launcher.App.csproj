@@ -32,12 +32,12 @@
     <AssemblyTitle>Cube Launcher</AssemblyTitle>
     <Title>Cube Launcher</Title>
     <Product>Cube Launcher</Product>
-    <Version>1.2.7</Version>
+    <Version>1.2.8</Version>
     <LauncherBuildChannel>release</LauncherBuildChannel>
-    <LauncherVersionCode>1020799</LauncherVersionCode>
-    <AssemblyVersion>1.2.7.0</AssemblyVersion>
-    <FileVersion>1.2.7.0</FileVersion>
-    <InformationalVersion>1.2.7</InformationalVersion>
+    <LauncherVersionCode>1020899</LauncherVersionCode>
+    <AssemblyVersion>1.2.8.0</AssemblyVersion>
+    <FileVersion>1.2.8.0</FileVersion>
+    <InformationalVersion>1.2.8</InformationalVersion>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Assets\Icons\app_icon_concept.ico</ApplicationIcon>
     <OutputType>WinExe</OutputType>

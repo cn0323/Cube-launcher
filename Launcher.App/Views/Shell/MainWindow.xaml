@@ -35,6 +35,7 @@
         xmlns:resourcesViews="clr-namespace:Launcher.App.Views.Resources"
         xmlns:generalViews="clr-namespace:Launcher.App.Views.General"
         xmlns:settingsViews="clr-namespace:Launcher.App.Views.Settings"
+        xmlns:behaviors="clr-namespace:Launcher.App.Behaviors"
         xmlns:res="clr-namespace:Launcher.App.Resources"
         x:Class="Launcher.App.Views.Shell.MainWindow"
         x:Name="RootWindow"
@@ -80,7 +81,10 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
-        <Grid Background="Transparent">
+        <!-- 底色必须落在窗口自己身上：壁纸/液态玻璃都是可选的，一旦都没开，
+             以前这些空白会露出系统窗口的白色，深色主题下侧栏就变成一条白条。 -->
+        <Grid Background="{DynamicResource Brush.Page.Background}"
+              behaviors:RoundedClip.Radius="8">
             <controls:VideoBackdropSource x:Name="LauncherBackgroundVideoPlayer"
                                           Source="{Binding LauncherBackground.VideoSource}"
                                           IsPlaying="{Binding LauncherBackground.IsVideoActive}"

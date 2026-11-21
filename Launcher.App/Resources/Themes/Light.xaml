@@ -371,7 +371,9 @@
                       ShadowDepth="0" />
     <Color x:Key="Color.Accent.Primary">#2196F3</Color>
     <!-- 悬浮导航胶囊（Dock）：浅色主题是磨砂白，深色字 -->
-    <SolidColorBrush x:Key="Brush.Dock.Surface" Color="#D6FDFEFF" />
+    <SolidColorBrush x:Key="Brush.Dock.Surface" Color="#E6FDFEFF" />
+    <!-- 选中圆片：比胶囊深两档的中性暖灰，压在白胶囊上才看得出是一块玻璃 -->
+    <SolidColorBrush x:Key="Brush.Dock.Lens" Color="#F2CCC8C1" />
     <LinearGradientBrush x:Key="Brush.Dock.Edge" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#FFFFFFFF" Offset="0" />
         <GradientStop Color="#8CFFFFFF" Offset="0.45" />

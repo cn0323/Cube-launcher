@@ -97,7 +97,7 @@
                     </Grid.Effect>
 
                     <!-- 透镜本体：一档实心的中性灰，压住图标，像参考图那块圆片 -->
-                    <Ellipse Fill="{DynamicResource Brush.LiquidGlass.Tint}" />
+                    <Ellipse Fill="{DynamicResource Brush.Dock.Lens}" />
                     <!-- 只留一点左上高光，圆片内部保持均匀 -->
                     <Ellipse>
                         <Ellipse.Fill>
@@ -105,8 +105,8 @@
                                                  GradientOrigin="0.36,0.28"
                                                  RadiusX="0.68"
                                                  RadiusY="0.68">
-                                <GradientStop Color="#4DFFFFFF" Offset="0" />
-                                <GradientStop Color="#14FFFFFF" Offset="0.52" />
+                                <GradientStop Color="#33FFFFFF" Offset="0" />
+                                <GradientStop Color="#0DFFFFFF" Offset="0.52" />
                                 <GradientStop Color="#00FFFFFF" Offset="1" />
                             </RadialGradientBrush>
                         </Ellipse.Fill>

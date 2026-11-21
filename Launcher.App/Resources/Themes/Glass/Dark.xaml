@@ -70,8 +70,8 @@
 
     <sys:Double x:Key="Opacity.LiquidGlass.Glow">0.9</sys:Double>
     <sys:Double x:Key="Opacity.LiquidGlass.Specular">0.5</sys:Double>
-    <!-- 导航透镜：实心一档的中性深灰，边缘不再带蓝色折射 -->
-    <SolidColorBrush x:Key="Brush.LiquidGlass.Tint" Color="#ED3A3E45" />
+    <!-- 全局玻璃底色：保持通透，别把整窗糊成灰 -->
+    <SolidColorBrush x:Key="Brush.LiquidGlass.Tint" Color="#2612C2FF" />
     <LinearGradientBrush x:Key="Brush.LiquidGlass.Edge" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#66FFFFFF" Offset="0" />
         <GradientStop Color="#14FFFFFF" Offset="0.5" />

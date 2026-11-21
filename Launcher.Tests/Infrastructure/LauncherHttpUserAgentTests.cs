@@ -56,7 +56,7 @@ public sealed class LauncherHttpUserAgentTests
     public void AppAssembly_ProducesCurrentReleaseUserAgent()
     {
         Assert.Equal(
-            "CL/1.2.7",
+            "CL/1.2.8",
             LauncherHttpUserAgent.BuildValue(typeof(InfoSettingsViewModel).Assembly));
     }
 
