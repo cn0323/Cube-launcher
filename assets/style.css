@@ -32,8 +32,10 @@
   --bg-3: #e9ecf2;
   --ink-rgb: 16, 24, 40;
   --glass-rgb: 255, 255, 255;
-  --spot-1: rgba(8, 145, 254, 0.30);
-  --spot-2: rgba(8, 145, 254, 0.14);
+  --spot-1: rgba(10, 132, 245, 0.34);
+  --spot-1-soft: rgba(10, 132, 245, 0.17);
+  --spot-2: rgba(52, 156, 255, 0.13);
+  --spot-3: rgba(126, 190, 255, 0.06);
   --hero-grad: linear-gradient(180deg, #fbfcfe 0%, #f7f8fb 58%, #f4f6fa 100%);
   --scroll-track: #f1f3f8;
   --accent-ink: #0b5cab;
@@ -75,8 +77,10 @@
   --ink-rgb: 255, 255, 255;
   --glass-rgb: 18, 24, 36;
 
-  --spot-1: rgba(58, 164, 255, 0.34);
-  --spot-2: rgba(58, 164, 255, 0.16);
+  --spot-1: rgba(78, 162, 255, 0.30);
+  --spot-1-soft: rgba(78, 162, 255, 0.15);
+  --spot-2: rgba(62, 148, 255, 0.12);
+  --spot-3: rgba(48, 128, 255, 0.06);
   --hero-grad: linear-gradient(180deg, #0b1018 0%, #070a10 58%, #090d14 100%);
   --scroll-track: #0b0f17;
   --accent-ink: #7cc0ff;
@@ -422,39 +426,35 @@ html:not(.js) .reveal { opacity: 1; transform: none; filter: none; }
 .spotlight {
   position: absolute;
   inset: 0;
-  z-index: 4;
+  /* 压在内容下面：截图、视频封面这些不透明图片会整块盖住光斑，
+     白色主题的 multiply 就不会把图染色。 */
+  z-index: 2;
   pointer-events: none;
-  /* 叠在文字上面，靠 multiply 让底色变深、字反而更实 */
   mix-blend-mode: multiply;
-  /* 两层：内圈是一颗紧凑的光核，外圈负责晕开，比原来那一层要明显得多 */
+  /* 三层：光核 → 中层晕 → 远处很淡的尾光；每层都多给一个中间 stop，
+     衰减接近高斯，不会出现一圈硬边。 */
   background:
     radial-gradient(
-      300px circle at var(--mx, 50%) var(--my, 40%),
-      var(--spot-1),
-      transparent 62%
+      circle 380px at var(--mx, 50%) var(--my, 40%),
+      var(--spot-1) 0%,
+      var(--spot-1-soft) 40%,
+      rgba(255, 255, 255, 0) 76%
     ),
     radial-gradient(
-      640px circle at var(--mx, 50%) var(--my, 40%),
-      var(--spot-2),
-      transparent 72%
+      circle 620px at var(--mx, 50%) var(--my, 40%),
+      var(--spot-2) 0%,
+      rgba(255, 255, 255, 0) 72%
+    ),
+    radial-gradient(
+      circle 1080px at var(--mx, 50%) var(--my, 40%),
+      var(--spot-3) 0%,
+      rgba(255, 255, 255, 0) 84%
     );
   opacity: 0;
-  transition: opacity 0.6s var(--ease);
+  transition: opacity 0.7s var(--ease);
 }
 body.has-pointer .spotlight { opacity: 1; }
 [data-theme="dark"] .spotlight { mix-blend-mode: screen; }
-
-/* 光斑整体再压深一点，白底上才看得出在动 */
-.spotlight::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    150px circle at var(--mx, 50%) var(--my, 40%),
-    rgba(var(--ink-rgb), 0.06),
-    transparent 70%
-  );
-}
 
 .eyebrow {
   display: inline-flex;
