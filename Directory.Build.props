@@ -1,0 +1,14 @@
+<Project>
+  <PropertyGroup>
+    <RestoreFallbackFolders></RestoreFallbackFolders>
+    <RestoreAdditionalProjectFallbackFolders></RestoreAdditionalProjectFallbackFolders>
+  </PropertyGroup>
+
+  <!-- 产品署名：制作公司 / 制作人 -->
+  <PropertyGroup>
+    <Company>重念</Company>
+    <Authors>重念</Authors>
+    <Product Condition="'$(Product)' == ''">Cube Launcher</Product>
+    <Copyright>Copyright © 2026 重念 · CubeLauncher</Copyright>
+  </PropertyGroup>
+</Project>
