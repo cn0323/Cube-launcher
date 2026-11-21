@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bgGradient" x1="512" y1="0" x2="512" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4C8DF0" />
+      <stop offset="0.28" stop-color="#2D71E2" />
+      <stop offset="0.52" stop-color="#1E64DC" />
+      <stop offset="1" stop-color="#1755C6" />
+    </linearGradient>
+    <linearGradient id="topFace" x1="512" y1="300" x2="512" y2="486" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A6D5FF" />
+      <stop offset="1" stop-color="#7FBDFB" />
+    </linearGradient>
+    <linearGradient id="leftFace" x1="326" y1="393" x2="512" y2="660" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3F8DF1" />
+      <stop offset="1" stop-color="#2A6BD8" />
+    </linearGradient>
+    <linearGradient id="rightFace" x1="698" y1="393" x2="512" y2="660" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#63B0FB" />
+      <stop offset="1" stop-color="#4593F0" />
+    </linearGradient>
+    <radialGradient id="gloss" cx="0.5" cy="0.18" r="0.72">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.34" />
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.08" />
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect x="0" y="0" width="1024" height="1024" rx="208" fill="url(#bgGradient)" />
+  <rect x="0" y="0" width="1024" height="1024" rx="208" fill="url(#gloss)" />
+
+  <path d="M512 300 L698 393 L512 486 L326 393 Z" fill="url(#topFace)" />
+  <path d="M326 393 L512 486 L512 660 L326 567 Z" fill="url(#leftFace)" />
+  <path d="M698 393 L698 567 L512 660 L512 486 Z" fill="url(#rightFace)" />
+
+  <!-- 立方体正面的字母 C：开口朝右，尺寸留在方块内部，不压住三条棱 -->
+  <path d="M571 394 A 96 96 0 1 0 571 546"
+        fill="none"
+        stroke="#FFFFFF"
+        stroke-width="56"
+        stroke-linecap="round"
+        opacity="0.99" />
+  <path d="M571 390 A 96 96 0 1 0 571 542"
+        fill="none"
+        stroke="#BFE2FF"
+        stroke-width="56"
+        stroke-linecap="round"
+        opacity="0.55"
+        filter="blur(12px)" />
+</svg>

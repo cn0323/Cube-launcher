@@ -1,0 +1,118 @@
+<!--
+  Cube Launcher
+  Copyright (C) 2026 重念
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, version 3.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+  SPDX-License-Identifier: GPL-3.0-only
+-->
+
+<!--
+  液态玻璃材质（深色）。仅在“设置 → 外观 → 液态玻璃效果”开启时叠加到主题层之上，
+  覆盖面板、输入控件与页面底板的笔刷，让面板呈现半透明玻璃观感。
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- 面板玻璃：顶部偏亮、底部收暗，模拟玻璃受力面的光衰减。 -->
+    <LinearGradientBrush x:Key="Brush.Card.Surface" StartPoint="0,0" EndPoint="0.3,1">
+        <GradientStop Color="#33FFFFFF" Offset="0" />
+        <GradientStop Color="#17FFFFFF" Offset="0.45" />
+        <GradientStop Color="#0AFFFFFF" Offset="1" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="Brush.Card.Border" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#8AFFFFFF" Offset="0" />
+        <GradientStop Color="#33CDEBFF" Offset="0.52" />
+        <GradientStop Color="#38FFFFFF" Offset="1" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="Brush.Field.ReadOnly.Surface" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Field.ReadOnly.Border" Color="#2BFFFFFF" />
+
+    <!-- 控件表面同步提亮，避免玻璃面板上出现突兀的实色块。 -->
+    <SolidColorBrush x:Key="Brush.Control.Surface" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Control.SurfaceAlt" Color="#24FFFFFF" />
+    <SolidColorBrush x:Key="Brush.Control.Border" Color="#2EFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Control.BorderStrong" Color="#4DFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Control.Separator" Color="#1FFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Input.TextBox.Background" Color="#1CFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Input.TextBox.BackgroundFocused" Color="#26FFFFFF" />
+    <SolidColorBrush x:Key="Brush.Input.ComboBox.Background" Color="#1CFFFFFF" />
+    <SolidColorBrush x:Key="Brush.Input.ComboBox.Border" Color="#26FFFFFF" />
+    <SolidColorBrush x:Key="Brush.Button.Secondary.Background" Color="#1FFFFFFF" />
+
+    <!-- 页面底板更透，让系统模糊与光晕透上来。 -->
+    <SolidColorBrush x:Key="Brush.Page.Background" Color="#A60C0F12" />
+
+    <DropShadowEffect x:Key="Effect.Card.Surface"
+                      x:Shared="False"
+                      BlurRadius="30"
+                      Color="#000000"
+                      Direction="270"
+                      Opacity="0.22"
+                      ShadowDepth="4" />
+    <DropShadowEffect x:Key="Effect.ToolTip.Surface"
+                      x:Shared="False"
+                      BlurRadius="26"
+                      Color="#000000"
+                      Direction="270"
+                      Opacity="0.24"
+                      ShadowDepth="2" />
+
+    <sys:Double x:Key="Opacity.LiquidGlass.Glow">0.9</sys:Double>
+    <sys:Double x:Key="Opacity.LiquidGlass.Specular">0.5</sys:Double>
+    <!-- 导航透镜：实心一档的中性深灰，边缘不再带蓝色折射 -->
+    <SolidColorBrush x:Key="Brush.LiquidGlass.Tint" Color="#ED3A3E45" />
+    <LinearGradientBrush x:Key="Brush.LiquidGlass.Edge" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#66FFFFFF" Offset="0" />
+        <GradientStop Color="#14FFFFFF" Offset="0.5" />
+        <GradientStop Color="#4DFFFFFF" Offset="1" />
+    </LinearGradientBrush>
+    <RadialGradientBrush x:Key="Brush.LiquidGlass.GlowPrimary"
+                         Center="0.5,0.5"
+                         GradientOrigin="0.5,0.5"
+                         RadiusX="0.5"
+                         RadiusY="0.5">
+        <GradientStop Color="#5C2196F3" Offset="0" />
+        <GradientStop Color="#2E2196F3" Offset="0.45" />
+        <GradientStop Color="#002196F3" Offset="1" />
+    </RadialGradientBrush>
+    <RadialGradientBrush x:Key="Brush.LiquidGlass.GlowSecondary"
+                         Center="0.5,0.5"
+                         GradientOrigin="0.5,0.5"
+                         RadiusX="0.5"
+                         RadiusY="0.5">
+        <GradientStop Color="#4D2FD9C5" Offset="0" />
+        <GradientStop Color="#242FD9C5" Offset="0.45" />
+        <GradientStop Color="#002FD9C5" Offset="1" />
+    </RadialGradientBrush>
+    <LinearGradientBrush x:Key="Brush.LiquidGlass.Specular" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#00FFFFFF" Offset="0" />
+        <GradientStop Color="#1FFFFFFF" Offset="0.42" />
+        <GradientStop Color="#33FFFFFF" Offset="0.5" />
+        <GradientStop Color="#1FFFFFFF" Offset="0.58" />
+        <GradientStop Color="#00FFFFFF" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- 苹果式液态玻璃的两层：顶面斜光 + 边缘色散，配合覆盖层的鼠标高光使用。 -->
+    <LinearGradientBrush x:Key="Brush.LiquidGlass.Sheen" StartPoint="0,0" EndPoint="0.55,1">
+        <GradientStop Color="#5CFFFFFF" Offset="0" />
+        <GradientStop Color="#1FFFFFFF" Offset="0.32" />
+        <GradientStop Color="#00FFFFFF" Offset="0.62" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="Brush.LiquidGlass.LensEdge" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#8CFFFFFF" Offset="0" />
+        <GradientStop Color="#26FFFFFF" Offset="0.4" />
+        <GradientStop Color="#40FFFFFF" Offset="0.72" />
+        <GradientStop Color="#66FFFFFF" Offset="1" />
+    </LinearGradientBrush>
+</ResourceDictionary>
