@@ -245,6 +245,33 @@ public partial class App : System.Windows.Application
             await RecoverPendingInstanceRenamesOnStartupAsync(
                 serviceProvider.GetRequiredService<IInstanceRenameRecoveryService>());
 
+            // 首次启动：先让用户选语言和外观，再进主界面。
+            // 只对全新配置生效；老用户的 settings.json 里没有这个字段，不该被弹一次。
+            if (startupSettingsLoad.WasCreated && startupSettings.HasCompletedOnboarding != true)
+            {
+                var onboarding = new Views.Onboarding.OnboardingWindow(
+                    startupSettings.Theme,
+                    startupSettings.ThemeFollowSystem,
+                    startupSettings.LauncherLanguage);
+                onboarding.ShowDialog();
+
+                startupSettings = await serviceProvider.GetRequiredService<ISettingsService>()
+                    .UpdateAsync(settings =>
+                    {
+                        settings.HasCompletedOnboarding = true;
+                        settings.Theme = onboarding.SelectedTheme;
+                        settings.ThemeFollowSystem = onboarding.FollowSystem;
+                        settings.LauncherLanguage = onboarding.SelectedLanguage;
+                    });
+
+                ApplyLauncherCulture(startupSettings.LauncherLanguage);
+                Log.Information(
+                    "Onboarding completed. Theme={Theme} FollowSystem={FollowSystem} Language={Language}",
+                    startupSettings.Theme,
+                    startupSettings.ThemeFollowSystem,
+                    startupSettings.LauncherLanguage);
+            }
+
             var mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
             await mainViewModel.PrimeAsync(startupSettings, minecraftDirectoryStartupRecovery);
             var themeService = serviceProvider.GetRequiredService<IThemeService>();

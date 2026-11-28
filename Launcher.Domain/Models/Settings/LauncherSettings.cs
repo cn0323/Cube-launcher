@@ -37,6 +37,12 @@ public sealed class LauncherSettings
     public string LauncherLanguage { get; set; } = LauncherDefaults.DefaultLauncherLanguage;
     public bool EnableDiagnosticLogging { get; set; }
     public bool HasAcceptedUserAgreement { get; set; }
+
+    /// <summary>
+    /// 首次启动向导是否走完（跳过也算）。
+    /// 用可空类型区分「老配置没有这个字段」和「新用户明确没走完」：老升级用户不该再被弹一次。
+    /// </summary>
+    public bool? HasCompletedOnboarding { get; set; }
     public double MainWindowWidth { get; set; } = LauncherDefaults.DefaultMainWindowWidth;
     public double MainWindowHeight { get; set; } = LauncherDefaults.DefaultMainWindowHeight;
     public bool MainWindowWasMaximized { get; set; }
