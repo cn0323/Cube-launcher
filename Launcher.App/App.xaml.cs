@@ -253,7 +253,18 @@ public partial class App : System.Windows.Application
                     startupSettings.Theme,
                     startupSettings.ThemeFollowSystem,
                     startupSettings.LauncherLanguage);
-                onboarding.ShowDialog();
+
+                // 向导关闭时主窗口还没创建，默认的 OnLastWindowClose 会把进程一起带走。
+                var previousShutdownMode = ShutdownMode;
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                try
+                {
+                    onboarding.ShowDialog();
+                }
+                finally
+                {
+                    ShutdownMode = previousShutdownMode;
+                }
 
                 startupSettings = await serviceProvider.GetRequiredService<ISettingsService>()
                     .UpdateAsync(settings =>
@@ -288,6 +299,7 @@ public partial class App : System.Windows.Application
             serviceProvider.GetRequiredService<MainWindowPlacementService>()
                 .Restore(mainWindow, mainViewModel.Settings);
             mainWindow.Show();
+            MainWindow = mainWindow;
             UiPerformanceLog.LogRenderEnvironment(TryReadSystemMemorySnapshot(serviceProvider), mainWindow);
             serviceProvider.GetRequiredService<UiThreadStallMonitor>().Start();
             Log.Information(
