@@ -372,8 +372,8 @@
     <Color x:Key="Color.Accent.Primary">#2196F3</Color>
     <!-- 悬浮导航胶囊（Dock）：深色主题是烟熏玻璃，亮色字 -->
     <SolidColorBrush x:Key="Brush.Dock.Surface" Color="#BF141B26" />
-    <!-- 选中圆片：比胶囊亮一档的烟灰片 -->
-    <SolidColorBrush x:Key="Brush.Dock.Lens" Color="#ED454A52" />
+    <!-- 选中圆球：深胶囊上一个干净的烟灰圆，不做任何渐变与描边 -->
+    <SolidColorBrush x:Key="Brush.Dock.Lens" Color="#ED3B4048" />
     <LinearGradientBrush x:Key="Brush.Dock.Edge" StartPoint="0,0" EndPoint="1,1">
         <GradientStop Color="#66FFFFFF" Offset="0" />
         <GradientStop Color="#26FFFFFF" Offset="0.45" />
