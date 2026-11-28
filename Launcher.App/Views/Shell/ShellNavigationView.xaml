@@ -95,6 +95,22 @@
                         </Border.Background>
                     </Border>
 
+                    <!-- 选中指示球：就是一个淡色的圆，滑到哪个导航项就停在哪。
+                         刻意什么都不加——没有高光、没有描边、没有投影，
+                         图标和文字照常显示在它上面。 -->
+                    <Ellipse x:Name="DockLens"
+                             Width="56"
+                             Height="56"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Top"
+                             Fill="{DynamicResource Brush.Dock.Lens}"
+                             IsHitTestVisible="False"
+                             Opacity="0">
+                        <Ellipse.RenderTransform>
+                            <TranslateTransform x:Name="LensOffset" />
+                        </Ellipse.RenderTransform>
+                    </Ellipse>
+
                     <!-- 导航项 -->
                     <StackPanel Margin="0,10">
                         <ItemsControl ItemsSource="{Binding NavigationItems}" Focusable="False">
@@ -223,135 +239,6 @@
                             BorderBrush="{DynamicResource Brush.Dock.Edge}"
                             BorderThickness="1.2"
                             IsHitTestVisible="False" />
-                </Grid>
-
-                <!-- 选中透镜：一颗探出胶囊的玻璃珠，里面是放大后的图标与文字 -->
-                <Grid x:Name="DockLens"
-                      Width="96"
-                      Height="96"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Top"
-                      IsHitTestVisible="False"
-                      Opacity="0">
-
-                    <Grid.RenderTransform>
-                        <TranslateTransform x:Name="LensOffset" />
-                    </Grid.RenderTransform>
-
-                    <Grid.Effect>
-                        <DropShadowEffect BlurRadius="24"
-                                          Color="#000000"
-                                          Direction="270"
-                                          Opacity="0.24"
-                                          ShadowDepth="5" />
-                    </Grid.Effect>
-
-                    <!-- 珠体：中间偏透、边缘发白的玻璃 -->
-                    <Ellipse>
-                        <Ellipse.Fill>
-                            <RadialGradientBrush Center="0.38,0.30"
-                                                 GradientOrigin="0.38,0.30"
-                                                 RadiusX="0.76"
-                                                 RadiusY="0.76">
-                                <!-- 选中项本体在代码里隐藏，这里不需要靠不透明度硬压，留出玻璃的通透 -->
-                                <GradientStop Color="#5CFFFFFF" Offset="0" />
-                                <GradientStop Color="#9EFFFFFF" Offset="0.5" />
-                                <GradientStop Color="#D9FFFFFF" Offset="0.85" />
-                                <GradientStop Color="#F2FFFFFF" Offset="1" />
-                            </RadialGradientBrush>
-                        </Ellipse.Fill>
-                    </Ellipse>
-
-                    <!-- 放大后的内容：外层缩放不影响布局，仍然居中 -->
-                    <StackPanel x:Name="LensContentHost"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                RenderTransformOrigin="0.5,0.5">
-                        <StackPanel.RenderTransform>
-                            <ScaleTransform x:Name="LensScale" ScaleX="1.5" ScaleY="1.5" />
-                        </StackPanel.RenderTransform>
-
-                        <Grid Width="24" Height="24" HorizontalAlignment="Center">
-                            <!-- 色散：两份错开的低透明副本，只有在放大后才看得出来 -->
-                            <controls:SvgIcon x:Name="LensIconCyan"
-                                              Width="21"
-                                              Height="21"
-                                              Opacity="0.22"
-                                              Foreground="#FF3FD8FF"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center">
-                                <controls:SvgIcon.RenderTransform>
-                                    <TranslateTransform X="-0.9" />
-                                </controls:SvgIcon.RenderTransform>
-                            </controls:SvgIcon>
-
-                            <controls:SvgIcon x:Name="LensIconMagenta"
-                                              Width="21"
-                                              Height="21"
-                                              Opacity="0.18"
-                                              Foreground="#FFFF6BA8"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center">
-                                <controls:SvgIcon.RenderTransform>
-                                    <TranslateTransform X="0.9" />
-                                </controls:SvgIcon.RenderTransform>
-                            </controls:SvgIcon>
-
-                            <controls:SvgIcon x:Name="LensIcon"
-                                              Width="21"
-                                              Height="21"
-                                              Foreground="{DynamicResource Brush.Dock.ForegroundActive}"
-                                              HorizontalAlignment="Center"
-                                              VerticalAlignment="Center" />
-
-                            <TextBlock x:Name="LensIconFont"
-                                       FontFamily="{DynamicResource LauncherIconFontFamily}"
-                                       FontSize="20"
-                                       TextAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource Brush.Dock.ForegroundActive}" />
-
-                            <Border x:Name="LensAvatar"
-                                    Width="24"
-                                    Height="24"
-                                    CornerRadius="7"
-                                    Visibility="Collapsed">
-                                <Image x:Name="LensAvatarImage"
-                                       Stretch="Fill"
-                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
-                            </Border>
-                        </Grid>
-
-                        <TextBlock x:Name="LensLabel"
-                                   HorizontalAlignment="Center"
-                                   FontSize="9.5"
-                                   FontWeight="SemiBold"
-                                   Margin="0,4,0,0"
-                                   Foreground="{DynamicResource Brush.Dock.ForegroundActive}" />
-                    </StackPanel>
-
-                    <!-- 虹彩描边：外面一圈很淡的青紫，模拟玻璃边缘的色散 -->
-                    <Ellipse StrokeThickness="2">
-                        <Ellipse.Stroke>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#D9F2FFFF" Offset="0" />
-                                <GradientStop Color="#99A8DFFF" Offset="0.3" />
-                                <GradientStop Color="#99D8C6FF" Offset="0.62" />
-                                <GradientStop Color="#E6FFFFFF" Offset="1" />
-                            </LinearGradientBrush>
-                        </Ellipse.Stroke>
-                    </Ellipse>
-
-                    <!-- 内圈反光，让珠子看起来有厚度 -->
-                    <Ellipse Stroke="#38FFFFFF" StrokeThickness="1" Margin="5.5" />
-
-                    <!-- 上缘弧光 -->
-                    <Path Data="M 23,21 Q 48,7 73,21"
-                          Stroke="#F2FFFFFF"
-                          StrokeThickness="2.6"
-                          StrokeStartLineCap="Round"
-                          StrokeEndLineCap="Round"
-                          Fill="Transparent" />
                 </Grid>
             </Grid>
         </Border>
