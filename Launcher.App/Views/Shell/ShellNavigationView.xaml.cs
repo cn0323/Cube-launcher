@@ -160,6 +160,7 @@ public partial class ShellNavigationView : UserControl
         if (viewModel is null)
         {
             DockLens.Opacity = 0;
+            RestoreItemVisibility();
             return;
         }
 
@@ -167,6 +168,7 @@ public partial class ShellNavigationView : UserControl
         if (selected is null)
         {
             DockLens.Opacity = 0;
+            RestoreItemVisibility();
             return;
         }
 
@@ -227,6 +229,22 @@ public partial class ShellNavigationView : UserControl
         }
 
         return null;
+    }
+
+    /// <summary>没有选中项时把之前藏起来的按钮放回去，别让导航项凭空消失。</summary>
+    private void RestoreItemVisibility() => RestoreButtons(DockBody);
+
+    private static void RestoreButtons(DependencyObject root)
+    {
+        var count = VisualTreeHelper.GetChildrenCount(root);
+        for (var i = 0; i < count; i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is Button button)
+                button.Opacity = 1;
+
+            RestoreButtons(child);
+        }
     }
 
     /// <summary>选中项在胶囊里隐藏，只由透镜显示，避免重影。</summary>
