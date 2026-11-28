@@ -19,10 +19,8 @@
 
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -32,11 +30,8 @@ namespace Launcher.App.Views.Shell;
 
 public partial class ShellNavigationView : UserControl
 {
-    /// <summary>透镜直径，和 XAML 里的 Width/Height 保持一致。</summary>
-    private const double LensSize = 96;
-
-    /// <summary>透镜里内容的放大倍率，和 XAML 里的 LensScale 保持一致。</summary>
-    private const double LensZoom = 1.5;
+    /// <summary>指示球直径，和 XAML 里的 Width/Height 保持一致。</summary>
+    private const double LensSize = 56;
 
     private int downloadTaskPulseDispatchQueued;
     private bool isDownloadTaskPulseRunning;
@@ -50,9 +45,6 @@ public partial class ShellNavigationView : UserControl
     public ShellNavigationView()
     {
         InitializeComponent();
-
-        LensScale.ScaleX = LensZoom;
-        LensScale.ScaleY = LensZoom;
 
         DataContextChanged += ShellNavigationView_DataContextChanged;
         Loaded += (_, _) =>
@@ -152,7 +144,7 @@ public partial class ShellNavigationView : UserControl
     }
 
     /* ------------------------------------------------------------------
-       透镜定位
+       指示球定位
        ------------------------------------------------------------------ */
 
     private void RefreshLens(bool animate)
@@ -160,7 +152,6 @@ public partial class ShellNavigationView : UserControl
         if (viewModel is null)
         {
             DockLens.Opacity = 0;
-            RestoreItemVisibility();
             return;
         }
 
@@ -168,7 +159,6 @@ public partial class ShellNavigationView : UserControl
         if (selected is null)
         {
             DockLens.Opacity = 0;
-            RestoreItemVisibility();
             return;
         }
 
@@ -184,12 +174,7 @@ public partial class ShellNavigationView : UserControl
 
         lensRetry = 0;
 
-        // 透镜里是选中项的一份放大副本，切页时连内容一起换。
-        UpdateLensContent(selected);
-
-        // 原项让位给透镜，否则半透明玻璃下面会叠出第二个图标和第二个标题。
-        UpdateSelectionVisibility(selected);
-
+        // 球心对准按钮中心：球比按钮高一点，上下各探出几像素。
         var offset = button.TransformToAncestor(DockBody).Transform(new Point(0, 0));
         var target = offset.Y + ((button.ActualHeight - LensSize) / 2);
 
@@ -231,81 +216,6 @@ public partial class ShellNavigationView : UserControl
         return null;
     }
 
-    /// <summary>没有选中项时把之前藏起来的按钮放回去，别让导航项凭空消失。</summary>
-    private void RestoreItemVisibility() => RestoreButtons(DockBody);
-
-    private static void RestoreButtons(DependencyObject root)
-    {
-        var count = VisualTreeHelper.GetChildrenCount(root);
-        for (var i = 0; i < count; i++)
-        {
-            var child = VisualTreeHelper.GetChild(root, i);
-            if (child is Button button)
-                button.Opacity = 1;
-
-            RestoreButtons(child);
-        }
-    }
-
-    /// <summary>选中项在胶囊里隐藏，只由透镜显示，避免重影。</summary>
-    private void UpdateSelectionVisibility(NavigationItem selected)
-    {
-        if (viewModel is null)
-            return;
-
-        foreach (var item in viewModel.NavigationItems)
-        {
-            var button = FindItemButton(DockBody, item);
-            if (button is not null)
-                button.Opacity = ReferenceEquals(item, selected) ? 0 : 1;
-        }
-
-        var downloadButton = FindItemButton(DockBody, viewModel.DownloadTasksNavigationItem);
-        if (downloadButton is not null)
-        {
-            downloadButton.Opacity = ReferenceEquals(viewModel.DownloadTasksNavigationItem, selected)
-                ? 0
-                : 1;
-        }
-    }
-
-    /// <summary>把选中项的图标、头像与标题同步到透镜里那份放大副本。</summary>
-    private void UpdateLensContent(NavigationItem item)
-    {
-        var hasAvatar = item.HasAvatar;
-        var hasIcon = !string.IsNullOrEmpty(item.IconKey);
-        var showIcon = hasIcon && !hasAvatar;
-
-        LensIcon.IconKey = item.IconKey;
-        LensIconCyan.IconKey = item.IconKey;
-        LensIconMagenta.IconKey = item.IconKey;
-
-        LensIcon.Visibility = showIcon ? Visibility.Visible : Visibility.Collapsed;
-        LensIconCyan.Visibility = LensIcon.Visibility;
-        LensIconMagenta.Visibility = LensIcon.Visibility;
-
-        LensIconFont.Text = item.Icon;
-        LensIconFont.Visibility = !hasIcon && !hasAvatar ? Visibility.Visible : Visibility.Collapsed;
-
-        LensAvatar.Visibility = hasAvatar ? Visibility.Visible : Visibility.Collapsed;
-        if (hasAvatar)
-        {
-            BindingOperations.SetBinding(
-                LensAvatarImage,
-                Image.SourceProperty,
-                new Binding(nameof(NavigationItem.AvatarUrl)) { Source = item });
-        }
-        else
-        {
-            BindingOperations.ClearBinding(LensAvatarImage, Image.SourceProperty);
-            LensAvatarImage.Source = null;
-        }
-
-        LensLabel.Text = FindResource("PageTitleConverter") is IValueConverter converter
-            ? converter.Convert(item.Page, typeof(string), null, CultureInfo.CurrentUICulture) as string ?? item.Title
-            : item.Title;
-    }
-
     private void MoveLens(double target, bool animate)
     {
         if (double.IsNaN(lensY))
@@ -320,10 +230,10 @@ public partial class ShellNavigationView : UserControl
             return;
         }
 
-        // 收尾给一点回弹，像一颗珠子滑过去停住，而不是硬生生刹停。
-        var animation = new DoubleAnimation(target, TimeSpan.FromMilliseconds(520))
+        // 平滑滑过去、不带回弹：起步快、收尾稳，像一颗球沿着导轨溜过去。
+        var animation = new DoubleAnimation(target, TimeSpan.FromMilliseconds(430))
         {
-            EasingFunction = new BackEase { Amplitude = 0.24, EasingMode = EasingMode.EaseOut }
+            EasingFunction = new QuarticEase { EasingMode = EasingMode.EaseOut }
         };
 
         LensOffset.BeginAnimation(TranslateTransform.YProperty, animation, HandoffBehavior.SnapshotAndReplace);
