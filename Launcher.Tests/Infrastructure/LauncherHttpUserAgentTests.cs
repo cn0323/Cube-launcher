@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Cube Launcher
  * Copyright (C) 2026 重念
  *
@@ -56,7 +56,7 @@ public sealed class LauncherHttpUserAgentTests
     public void AppAssembly_ProducesCurrentReleaseUserAgent()
     {
         Assert.Equal(
-            "CL/1.3.0",
+            "CL/1.3.1",
             LauncherHttpUserAgent.BuildValue(typeof(InfoSettingsViewModel).Assembly));
     }
 
