@@ -32,10 +32,11 @@
   --bg-3: #e9ecf2;
   --ink-rgb: 16, 24, 40;
   --glass-rgb: 255, 255, 255;
-  --spot-1: rgba(10, 132, 245, 0.34);
-  --spot-1-soft: rgba(10, 132, 245, 0.17);
-  --spot-2: rgba(52, 156, 255, 0.13);
-  --spot-3: rgba(126, 190, 255, 0.06);
+  --spot-1: rgba(18, 122, 232, 0.20);
+  --spot-1-soft: rgba(18, 122, 232, 0.10);
+  --spot-2: rgba(56, 152, 255, 0.06);
+  --spot-3: rgba(120, 186, 255, 0.032);
+  --spot-4: rgba(140, 198, 255, 0.018);
   --hero-grad: linear-gradient(180deg, #fbfcfe 0%, #f7f8fb 58%, #f4f6fa 100%);
   --scroll-track: #f1f3f8;
   --accent-ink: #0b5cab;
@@ -77,10 +78,11 @@
   --ink-rgb: 255, 255, 255;
   --glass-rgb: 18, 24, 36;
 
-  --spot-1: rgba(78, 162, 255, 0.30);
-  --spot-1-soft: rgba(78, 162, 255, 0.15);
-  --spot-2: rgba(62, 148, 255, 0.12);
-  --spot-3: rgba(48, 128, 255, 0.06);
+  --spot-1: rgba(96, 170, 255, 0.24);
+  --spot-1-soft: rgba(96, 170, 255, 0.13);
+  --spot-2: rgba(74, 156, 255, 0.075);
+  --spot-3: rgba(56, 136, 255, 0.04);
+  --spot-4: rgba(70, 150, 255, 0.022);
   --hero-grad: linear-gradient(180deg, #0b1018 0%, #070a10 58%, #090d14 100%);
   --scroll-track: #0b0f17;
   --accent-ink: #7cc0ff;
@@ -431,27 +433,33 @@ html:not(.js) .reveal { opacity: 1; transform: none; filter: none; }
   z-index: 2;
   pointer-events: none;
   mix-blend-mode: multiply;
-  /* 三层：光核 → 中层晕 → 远处很淡的尾光；每层都多给一个中间 stop，
-     衰减接近高斯，不会出现一圈硬边。 */
+  /* 四层：光核 → 中层晕 → 尾光 → 几乎看不见的环境光。
+     每层多给一个中间 stop，衰减接近高斯，边缘不会出现一圈硬边；
+     整体透明度压低了一档，只在接近鼠标的位置才看得出来。 */
   background:
     radial-gradient(
-      circle 380px at var(--mx, 50%) var(--my, 40%),
+      circle 320px at var(--mx, 50%) var(--my, 40%),
       var(--spot-1) 0%,
-      var(--spot-1-soft) 40%,
-      rgba(255, 255, 255, 0) 76%
+      var(--spot-1-soft) 32%,
+      rgba(255, 255, 255, 0) 74%
     ),
     radial-gradient(
-      circle 620px at var(--mx, 50%) var(--my, 40%),
+      circle 560px at var(--mx, 50%) var(--my, 40%),
       var(--spot-2) 0%,
-      rgba(255, 255, 255, 0) 72%
+      rgba(255, 255, 255, 0) 86%
     ),
     radial-gradient(
-      circle 1080px at var(--mx, 50%) var(--my, 40%),
+      circle 960px at var(--mx, 50%) var(--my, 40%),
       var(--spot-3) 0%,
-      rgba(255, 255, 255, 0) 84%
+      rgba(255, 255, 255, 0) 92%
+    ),
+    radial-gradient(
+      circle 1500px at var(--mx, 50%) var(--my, 40%),
+      var(--spot-4) 0%,
+      rgba(255, 255, 255, 0) 96%
     );
   opacity: 0;
-  transition: opacity 0.7s var(--ease);
+  transition: opacity 1.05s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 body.has-pointer .spotlight { opacity: 1; }
 [data-theme="dark"] .spotlight { mix-blend-mode: screen; }
